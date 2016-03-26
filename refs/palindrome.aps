@@ -1,7 +1,7 @@
 # Palindrone en notation en base 'b'
 [
-  CONST b 10;
-  CONST x 1234;
+  CONST b int 10;
+  CONST x int 1234;
 
   VAR xx int;
   VAR q int;

@@ -122,19 +122,18 @@ void eval_stat(AST* st, Env ** env) {
     case EVAL_INT:
       fprintf(stderr, "Setting var %s to %d\n", myVar->name, box->contents.num);
       myVar->contents.asInt = box->contents.num;
-      print_env_cell(myVar);
     }
     break;
     }
   case T_IF:
-    if (box->contents.bool == FALSE)
-      eval_cmds(stat->prog1, env);
+    if (box->contents.bool == TRUE)
+      eval_block(stat->prog1, env);
     else
-      eval_cmds(stat->prog1, env);
+      eval_block(stat->prog2, env);
     break;
   case T_WHILE: {
     while (box->contents.bool == TRUE) {
-      eval_cmds(stat->prog1, env);
+      eval_block(stat->prog1, env);
       box = eval_expr(stat->expr, env);
     }
     break;
@@ -300,20 +299,17 @@ Box * make_int(int val) {
 }
 
 Env * get_env(char * varName, Env * env) {
-  if (env)
+  while (env) {
     if (strcmp(varName, env->name) == 0) 
       return env;
-    else
-      return get_env(varName, env->next);
-  else {
-    fprintf(stderr, "Symbol not in environment\n");
-    exit(EXIT_FAILURE);
+    env = env->next;
   }
-  
+  fprintf(stderr, "Error: symbol %s not in environment\n", varName);
+  exit(EXIT_FAILURE);
 }
 
 Box * search_env(char * varName, Env * env) {
-  if (env) {
+  while (env) {
     if (strcmp(varName, env->name) == 0) {
       switch (env->valType) {
       case EVAL_BOOL:
@@ -321,17 +317,14 @@ Box * search_env(char * varName, Env * env) {
       case EVAL_INT:
 	return make_box(env->valType, env->contents.asInt, -1);
       default: 
-	fprintf(stderr, "Environment type error\n");
+	fprintf(stderr, "Environment type error (searchenv)\n");
 	exit(EXIT_FAILURE);
       }
     }
-    else
-      return search_env(varName, env->next);
+    env = env->next;
   }
-  else {
-    fprintf(stderr, "Symbol not in environment\n");
-    exit(EXIT_FAILURE);
-  }
+  fprintf(stderr, "Symbol not in environment (searchenv)\n");
+  exit(EXIT_FAILURE);
 }
 
 void print_env_cell(Env * env) {
@@ -343,7 +336,7 @@ void print_env_cell(Env * env) {
   strcat(res, ":");
   switch (env->varType) {
   case EVAL_CNST:
-    strcat(res, "cnst ");
+    strcat(res, "cst ");
     break;
   case EVAL_VAR:
     strcat(res, "var ");

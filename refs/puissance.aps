@@ -1,7 +1,7 @@
 # Puissance par dichotomie
 [
-  CONST x 5;
-  CONST n 9;
+  CONST x int 5;
+  CONST n int 9;
 
   IF (eq n 0)
     [

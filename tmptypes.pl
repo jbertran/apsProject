@@ -1,1 +1,1 @@
-prog([var(x,int),set(x,22),if(lt(x,42),[set(x,add(x,20))],[set(x,sub(x,20))])])
+prog([const(b,int,10),const(x,int,1221),var(xx,int),var(q,int),var(r,int),var(m,int),set(m,0),while(lt(0,xx),[set(q,div(xx,b)),set(r,sub(xx,mul(q,b))),set(m,add(mul(m,b),r)),set(xx,q)]),if(eq(xx,m),[echo(1)],[echo(0)])])

@@ -1,11 +1,11 @@
 # racine entière par la méthode de Newton
 [
-  CONST n 42;
+  CONST n int 42;
   VAR x int;
   VAR r int;
 
   SET r (add n 1);
-  SET x (div y 2);
+  SET x (div r 2);
   WHILE (lt x r)
     [
       SET r x;

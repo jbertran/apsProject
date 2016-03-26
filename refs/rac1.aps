@@ -1,6 +1,6 @@
 # Racine de n par défaut
 [
-  CONST n 42;
+  CONST n int 42;
   VAR r int;
   VAR y int;
   VAR z int;
@@ -10,7 +10,7 @@
   SET z 1;
   WHILE (or (lt y n) (eq y n))
     [
-      SET r (add x 1);
+      SET r (add r 1);
       SET z (add z 2);
       SET y (add y z)
     ];
