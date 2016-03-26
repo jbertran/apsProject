@@ -1,0 +1,15 @@
+# racine entière par la méthode de Newton
+[
+  CONST n 42;
+  VAR x int;
+  VAR r int;
+
+  SET r (add n 1);
+  SET x (div y 2);
+  WHILE (lt x r)
+    [
+      SET r x;
+      SET x (div (add x (div n x)) 2)
+    ];
+  ECHO r  
+]

@@ -1,0 +1,1 @@
+prog([var(x,int),set(x,22),if(lt(x,42),[set(x,add(x,20))],[set(x,sub(x,20))])])

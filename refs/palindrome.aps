@@ -1,0 +1,22 @@
+# Palindrone en notation en base 'b'
+[
+  CONST b 10;
+  CONST x 1234;
+
+  VAR xx int;
+  VAR q int;
+  VAR r int;
+  VAR m int;
+
+  SET m 0;
+  WHILE (lt 0 xx)
+    [
+      SET q (div xx b);
+      SET r (sub xx (mul q b));
+      SET m (add (mul m b) r);
+      SET xx q
+    ];
+  IF (eq xx m)
+    [ ECHO 1 ]
+    [ ECHO 0 ]
+]
