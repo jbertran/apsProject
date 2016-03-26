@@ -1,1 +1,1 @@
-prog([const(b,int,10),const(x,int,1221),var(xx,int),var(q,int),var(r,int),var(m,int),set(m,0),while(lt(0,xx),[set(q,div(xx,b)),set(r,sub(xx,mul(q,b))),set(m,add(mul(m,b),r)),set(xx,q)]),if(eq(xx,m),[echo(1)],[echo(0)])])
+prog([const(n,int,42),var(r,int),var(y,int),var(z,int),set(r,0),set(y,1),set(z,1),while(or(lt(y,n),eq(y,n)),[set(r,add(r,1)),set(z,add(z,2)),set(y,add(y,z))]),echo(r)])

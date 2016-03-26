@@ -40,12 +40,16 @@ void eval_program(Program* prog) {
   debug_ev("Program init");
   Env * env = NULL;
   eval_block(prog->cmds, &env);
-  print_env(env);
 }
 
 void eval_block(AST* prog, Env ** env) {
-  debug_ev("Prog");
-  eval_cmds(prog->content.asBlock->cmds, env);
+  debug_ev("Block");
+  // Work on an environment "copy" to keep scope
+  Env * blockEnv = malloc(sizeof(*blockEnv));
+  blockEnv = *env;
+  eval_cmds(prog->content.asBlock->cmds, &blockEnv);
+  fprintf(stdout, "Env values at block end\n");
+  print_env(blockEnv);
 }
 
 void eval_cmds(AST* cmds, Env ** env) {
@@ -114,16 +118,16 @@ void eval_stat(AST* st, Env ** env) {
   switch (stat->type) {
   case T_SET:
     {
-    Env * myVar = get_env(stat->ident, *env);
-    switch (box->type) {
-    case EVAL_BOOL:
-      myVar->contents.asBool = box->contents.bool;
+      Env * myVar = get_env(stat->ident, *env);
+      switch (box->type) {
+      case EVAL_BOOL:
+	myVar->contents.asBool = box->contents.bool;
       break;
-    case EVAL_INT:
-      fprintf(stderr, "Setting var %s to %d\n", myVar->name, box->contents.num);
-      myVar->contents.asInt = box->contents.num;
-    }
-    break;
+      case EVAL_INT:
+	fprintf(stderr, "Setting var %s to %d\n", myVar->name, box->contents.num);
+	myVar->contents.asInt = box->contents.num;
+      }
+      break;
     }
   case T_IF:
     if (box->contents.bool == TRUE)
@@ -131,13 +135,17 @@ void eval_stat(AST* st, Env ** env) {
     else
       eval_block(stat->prog2, env);
     break;
-  case T_WHILE: {
-    while (box->contents.bool == TRUE) {
-      eval_block(stat->prog1, env);
-      box = eval_expr(stat->expr, env);
+  case T_WHILE: 
+    {
+      // Work on an environment "copy" to keep scope
+      Env * whileEnv = malloc(sizeof(*whileEnv));
+      whileEnv = *env;
+      while (box->contents.bool == TRUE) {
+	eval_block(stat->prog1, &whileEnv);
+	box = eval_expr(stat->expr, &whileEnv);
+      }
+      break;
     }
-    break;
-  }
   case T_ECHO:
     switch (box->type) {
     case EVAL_BOOL:
@@ -345,6 +353,7 @@ void print_env_cell(Env * env) {
   case EVAL_INT:
     strcat(res, "int ");
     sprintf(valbuf, "%d", env->contents.asInt);
+    strcat(res, valbuf);
     break;
   case EVAL_BOOL:
     strcat(res, " bool ");
@@ -356,13 +365,16 @@ void print_env_cell(Env * env) {
       strcat(res, "true");
       break;
     }
+    break;
+  default:
+    fprintf(stdout, "Error: variable neither cst nor var\n");
+    exit(EXIT_FAILURE);
   }
   strcat(res, "]\n");
   fprintf(stdout, "%s", res);
 }
 
 void print_env(Env * env) {
-  fprintf(stdout, "Environment after evaluation:\n");
   while (env) {
     print_env_cell(env);
     env = env->next;
