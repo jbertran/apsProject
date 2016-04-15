@@ -21,9 +21,9 @@ void print_type(FILE* f, AST* type);
 
 void print_program(FILE* f, Program* prog) {
   debug_plg("Program");
-  fprintf(f, "prog(");
+  fprintf(f, "type(prog(");
   print_block(f, prog->cmds);
-  fprintf(f, ")");
+  fprintf(f, "), [], void).");
 }
 
 void print_block(FILE* f, AST* block) {

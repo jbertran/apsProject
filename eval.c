@@ -43,8 +43,8 @@ void eval_block(AST* prog, Env ** env) {
   Env * blockEnv = malloc(sizeof(*blockEnv));
   blockEnv = *env;
   eval_cmds(prog->content.asBlock->cmds, &blockEnv);
-  // fprintf(stdout, "Env values at block end\n");
-  // print_env(blockEnv);
+  fprintf(stdout, "Env values at block end\n");
+  print_env(blockEnv);
 }
 
 void eval_cmds(AST* cmds, Env ** env) {

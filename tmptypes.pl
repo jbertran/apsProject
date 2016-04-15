@@ -1,1 +1,0 @@
-prog([const(n,int,42),var(r,int),var(y,int),var(z,int),set(r,0),set(y,1),set(z,1),while(or(lt(y,n),eq(y,n)),[set(r,add(r,1)),set(z,add(z,2)),set(y,add(y,z))]),echo(r)])

@@ -7,24 +7,36 @@
 
 Des fichiers de test syntaxiquement corrects et bien typés sont disponibles dans le souds-dossier `refs`.
 
+### Compilation
+
 * Parser : 
 	* `$ make parser`
-* Génération d'AST et du fichier de typage
-	* `$ make typing`
-	* `$ ./type <fichier>`
-		* Génère le code Prolog correspondant dans `tmptypes.pl`
-* Typage d'un programme
-	* `$ swipl typechecker.pl`
-	* `?- [tmptypes].`
-	* `?- typeProg().`
-		* Prolog renvoie faux si le programme est mal typé.
-* Génération d'AST et évaluation : 
+* Lexer :
+	* `$ make lexer`
+* Génération de code Prolog
+	* `$ make type`
+* Evaluation du programme
 	* `$ make eval`
-	* `$ ./eval <fichier>`
+
+### Utilisation
+
+* La génération du code Prolog se fait par défaut dans `tmptypes.pl` (modifiable en \#define dans eval.c).
+	* Génération du code:
+		`$ ./type <fichier.aps>`
+	* Typage:
+		* `$ swipl typechecker.pl`
+		* Copier le code prolog généré dans le REPL Prolog
+		* Prolog renvoie faux si le programme est mal typé. 
+* Pour faire abstraction des problèmes d'interopérabilité entre C et Prolog, on suppose à l'évaluation que le programme est bien typé. L'évaluation fournit des messages d'erreurs généralement suffisamment verbeux dans le cas contraire. L'évaluation affiche les valeurs contenues dans l'environnement à chaque sortie de bloc (que ce soit pour retourner dans le bloc pour un while, ou réellement en sortie), puisque l'afficher en sortie de programme reverrait un environnement vide à cause du traitement de la portée des variables.
+	* `$ ./aps <fichier.aps>` construit l'AST, et évalue le code contenu dans `fichier.aps`.
+	
+### Debug
+
+Chaque fichier de traitement de génération et traitement de l'AST contient un switch de debug pour obtenir un affichage verbeux des étapes du traitement, à éventuellement \#define en début du `.c` pour activer cet affichage.
 
 # Arbre de syntaxe abstrait
 
-Pour simplifier le parser, éviter d'avoir une union de types énorme dans celui-ci et réduire le nombre de tokens à typer différemment dans l'en-tête, tous les noeuds de l'AST sont de type AST, une union entre les différents types concrets de noeuds -- expression, déclaration, etc... Le désavantage de la couche d'indirection supplémentaire est contrebalancé par la facilité de modification du contenu de la structure à l'écriture. 
+Pour simplifier le parser, éviter d'avoir une union de types énorme dans celui-ci et réduire le nombre de tokens à typer différemment dans l'en-tête, tous les noeuds de l'AST sont de type AST, une union entre les différents types concrets de noeuds -- expression, déclaration, etc... Le désavantage de la couche d'indirection supplémentaire est contrebalancé par la facilité de modification du contenu de la structure à l'écriture.
 
 # Typage
 
