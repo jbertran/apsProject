@@ -5,11 +5,6 @@
 #include "ast.h"
 #include "eval.h"
 
-#define TYPEFILE "tmptype.pl"
-#define TYPEPATH "typechecker.pl"
-
-#define DEBUG_EV 1
-
 #ifdef DEBUG_EV
 #define debug_ev(str) { fprintf(stderr, "%s\n", str); fflush(stderr); }
 #else
@@ -48,8 +43,8 @@ void eval_block(AST* prog, Env ** env) {
   Env * blockEnv = malloc(sizeof(*blockEnv));
   blockEnv = *env;
   eval_cmds(prog->content.asBlock->cmds, &blockEnv);
-  fprintf(stdout, "Env values at block end\n");
-  print_env(blockEnv);
+  // fprintf(stdout, "Env values at block end\n");
+  // print_env(blockEnv);
 }
 
 void eval_cmds(AST* cmds, Env ** env) {
@@ -124,7 +119,7 @@ void eval_stat(AST* st, Env ** env) {
 	myVar->contents.asBool = box->contents.bool;
       break;
       case EVAL_INT:
-	fprintf(stderr, "Setting var %s to %d\n", myVar->name, box->contents.num);
+	// fprintf(stderr, "Setting var %s to %d\n", myVar->name, box->contents.num);
 	myVar->contents.asInt = box->contents.num;
       }
       break;
@@ -247,38 +242,6 @@ ValType eval_type(AST* expr, Env ** env) {
   default: fprintf(stderr, "Returning void value\n"); exit(EXIT_FAILURE);
   }
 }
-
-/*
-int main(int argc, char** argv) {
-  if (argc < 2) {
-    fprintf(stderr, "No file specified\n");
-    exit(EXIT_FAILURE);
-  }
-  else {
-    AST* programAST;
-    // Parse it!
-    programAST = yyparse();
-    // Typecheck it!
-    FILE* typefp;
-    if (!(typefp = fopen(TYPEFILE, "rw"))) {
-      fprintf(stderr, "Unable to obtain temp file for type checking\n");
-      exit(EXIT_FAILURE);
-    }
-    else {
-      // Replace with pipe(), 
-      FILE* swipl;
-      print_prog(typefp, programAST);
-      fflush(typefp);
-      if (!(swipl = popen('/usr/bin/swipl', 'rw'))) {
-	fprintf(stderr, "Unable to obtain prolog interpreter\n");
-	exit(EXIT_FAILURE);
-      }
-      fprintf(swipl, "[%s].\n", TYPEPATH);
-    }
-    // Evaluate it!
-  }
-}
-*/
 
 Box * make_box(ValType type, int asNum, boolean asBool) {
   Box * ret = malloc(sizeof(*ret));
